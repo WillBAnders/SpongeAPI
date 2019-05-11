@@ -85,7 +85,7 @@ public interface EquipmentInventory extends Inventory, CarriedInventory<Equipabl
     /**
      * Sets the item for the specified equipment type.
      *
-     * @see Inventory#set(ItemStack)
+     * @see Slot#set(ItemStack)
      * @param equipmentType Type of equipment slot to set
      * @param stack stack to insert
      * @return operation result, for details see {@link Inventory#set}
