@@ -24,13 +24,13 @@
  */
 package org.spongepowered.api;
 
-import org.spongepowered.api.command.source.CommandSource;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.profile.GameProfileManager;
 import org.spongepowered.api.resourcepack.ResourcePack;
 import org.spongepowered.api.scoreboard.Scoreboard;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.channel.MessageChannel;
+import org.spongepowered.api.text.channel.MessageReceiver;
 import org.spongepowered.api.world.WorldManager;
 import org.spongepowered.api.world.chunk.ChunkTicketManager;
 import org.spongepowered.api.world.storage.ChunkLayout;
@@ -43,7 +43,7 @@ import java.util.UUID;
 /**
  * Represents a typical Minecraft Server.
  */
-public interface Server extends Engine, CommandSource {
+public interface Server extends Engine, MessageReceiver {
 
     /**
      * Gets the {@link WorldManager}.
