@@ -31,8 +31,9 @@ import org.spongepowered.api.data.property.PropertyHolder;
 import org.spongepowered.api.data.property.PropertyMatcher;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.ItemType;
-import org.spongepowered.api.item.inventory.query.QueryOperation;
-import org.spongepowered.api.item.inventory.query.QueryOperationTypes;
+import org.spongepowered.api.item.inventory.query.Query;
+import org.spongepowered.api.item.inventory.query.QueryType;
+import org.spongepowered.api.item.inventory.query.QueryTypes;
 import org.spongepowered.api.item.inventory.transaction.InventoryTransactionResult;
 import org.spongepowered.api.item.inventory.type.ViewableInventory;
 import org.spongepowered.api.util.ResettableBuilder;
@@ -330,23 +331,46 @@ public interface Inventory extends Nameable, PropertyHolder {
     <V> Optional<V> getProperty(Property<V> property);
 
     /**
-     * Query this inventory for inventories matching any of the supplied
-     * queries. Logical <code>OR</code> is applied between operands.
+     * Query this inventory with given {@link Query}
      *
-     * @param operations queries to check against
-     * @return the query result
+     * @param query The query
+     *
+     * @return The queried inventory
      */
-    Inventory query(QueryOperation<?>... operations);
+    Inventory query(Query query);
 
     /**
-     * Query this inventory for inventories matching
-     * the supplied {@link PropertyMatcher}.
+     * Query this inventory with given {@link QueryType} and {@code param}.
+     *
+     * @param type The query type
+     * @param param The query parameter
+     * @param <P> The query parameter type
+     *
+     * @return The queried inventory
+     */
+    <P> Inventory query(QueryType.OneParam<P> type, P param);
+
+    /**
+     * Query this inventory with given {@link QueryType} and {@code params}.
+     *
+     * @param type The query type
+     * @param param1 The first query parameter
+     * @param param2 The second query parameter
+     * @param <P1> The first query paramater type
+     * @param <P2> The second query parameter type
+     *
+     * @return The queried inventory
+     */
+    <P1, P2> Inventory query(QueryType.TwoParam<P1, P2> type, P1 param1, P2 param2);
+
+    /**
+     * Query this inventory for inventories matching the supplied {@link PropertyMatcher}.
      *
      * @param propertyMatcher the property matcher
      * @return the query result
      */
     default Inventory query(PropertyMatcher<?> propertyMatcher) {
-        return query(QueryOperationTypes.PROPERTY.of(propertyMatcher));
+        return query(QueryTypes.PROPERTY, propertyMatcher);
     }
 
     /**
@@ -356,6 +380,7 @@ public interface Inventory extends Nameable, PropertyHolder {
      *
      * @param inventoryType The inventory type to query for
      * @param <T> The Type of inventory
+     *
      * @return the query result
      */
     <T extends Inventory> Optional<T> query(Class<T> inventoryType);
@@ -408,16 +433,6 @@ public interface Inventory extends Nameable, PropertyHolder {
      * @return whether the given inventory is contained in this one.
      */
     boolean containsInventory(Inventory inventory);
-
-    /**
-     * Transforms this inventory using the given transformation.
-     *
-     * @param transformation The transformation
-     * @return The transformed Inventory
-     */
-    default Inventory transform(InventoryTransformation transformation) {
-        return transformation.transform(this);
-    }
 
     /**
      * Returns true if the given inventory is a direct child of this one.
