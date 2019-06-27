@@ -45,7 +45,7 @@ import java.util.Optional;
  * also contains utility methods to obtain key information about said cause.
  *
  * <p>In line with causes used in events, you may assume that the
- * {@link Cause#root()} (from {@link CommandCause#getCause()} is the direct
+ * {@link Cause#root()} (from {@link CommandCause#getCause()}) is the direct
  * invoker of the command, though it should also be noted that the invoker
  * and intended <strong>target</strong> of a command may be different, which
  * will be indicated by entries in the {@link Cause#getContext()}</p>
