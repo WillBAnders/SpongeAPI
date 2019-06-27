@@ -31,6 +31,7 @@ import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.cause.EventContext;
 import org.spongepowered.api.event.cause.EventContextKeys;
+import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.service.permission.Subject;
 import org.spongepowered.api.text.channel.MessageReceiver;
 import org.spongepowered.api.world.Locatable;
@@ -43,9 +44,50 @@ import java.util.Optional;
  * The {@link CommandCause} represents the {@link Cause} of a command, and
  * also contains utility methods to obtain key information about said cause.
  *
- * <p>Command consumers are under no obligation to use the utility methods as
- * all methods obtain their information from the {@link Cause}.They do, however,
- * provide hints as to what the implementation will select.</p>
+ * <p>In line with causes used in events, you may assume that the
+ * {@link Cause#root()} (from {@link CommandCause#getCause()} is the direct
+ * invoker of the command, though it should also be noted that the invoker
+ * and intended <strong>target</strong> of a command may be different, which
+ * will be indicated by entries in the {@link Cause#getContext()}</p>
+ *
+ * <p>It is <em>very</em> important to note that no object in the {@link Cause}
+ * is guaranteed to be a traditional "command source" - a plugin may invoke a
+ * command without pushing anything to the cause stack and thus the
+ * {@link PluginContainer} of the plugin in question will be the root of the
+ * cause.</p>
+ *
+ * <p>In the case of a command being executed as a "proxy", such as a command
+ * block executing a command by virtue of an entity stepping on a pressure
+ * plate, the direct cause will be the command block. However, the player
+ * in question will also be present in the cause stack, allowing command
+ * providers to obtain richer information about the invocation of their command.
+ * </p>
+ *
+ * <p>The {@link EventContext} that is attached to {@link Cause#getContext()}
+ * <strong>may</strong> offer other indications as to how the command should
+ * be handled, in addition to using the provided cause stack:</p>
+ *
+ * <ul>
+ *     <li>{@link EventContextKeys#MESSAGE_TARGET}, which indicates the
+ *     where messages that should be sent back to the invoker should be sent
+ *     to (typically messages indicating the status of the command execution);
+ *     </li>
+ *     <li>{@link EventContextKeys#SUBJECT}, which indicates the subject that
+ *     should be subjected to any permission checks;</li>
+ *     <li>{@link EventContextKeys#LOCATION}, which indicates the location that
+ *     the command should be assumed to be executed around;
+ *     <li>{@link EventContextKeys#ROTATION}, which indicates the rotation that
+ *     the command should assume the target has; and</li>
+ *     <li>{@link EventContextKeys#BLOCK_TARGET}, which indicates the block that
+ *     the command should take into account when executing.</li>
+ * </ul>
+ *
+ * <p>There are utility methods on this interface that provide hints as to what
+ * the implementation will select for different tasks, for example, the
+ * implementation will use the result of {@link #getSubject()} for permission
+ * checks. Third party command consumers are under no obligation to use these
+ * utility methods as all methods obtain their information from the
+ * {@link Cause}.</p>
  *
  * <p>No method on this interface, apart from {@link #getCause()}, should
  * be taken a guarantee of what may be present, however, they indicate what

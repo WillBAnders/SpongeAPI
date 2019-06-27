@@ -31,8 +31,6 @@ import org.spongepowered.api.command.parameter.CommandContext;
 import org.spongepowered.api.command.parameter.Parameter;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.cause.EventContext;
-import org.spongepowered.api.event.cause.EventContextKeys;
-import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.service.permission.Subject;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.util.ResettableBuilder;
@@ -63,40 +61,10 @@ import java.util.function.Predicate;
  * as required. This <em>may</em> enable the use of client side command
  * completions, if the implementation is equipped to do so.</p>
  *
- * <p>Commands in Sponge are provided with a {@link CommandCause}, which
- * provides a {@link Cause} explains who <strong>directly</strong> invoked the
- * command. In line with causes used in events, you may assume that the
- * {@link Cause#root()} is the <strong>intended</strong> direct invoker.</p>
- *
- * <p>It is <em>very</em> important to note that no object in the {@link Cause}
- * is guaranteed to be a traditional "command source" - a plugin may invoke a
- * command without pushing anything to the cause stack and thus the
- * {@link PluginContainer} of the plugin in question will be the root of the
- * cause.</p>
- *
- * <p>In the case of a command being executed as a "proxy", such as a command
- * block executing a command by virtue of an entity stepping on a pressure
- * plate, the direct cause will be the command block. However, the player
- * in question will also be present in the cause stack, allowing command
- * providers to obtain richer information about the invocation of their command.
- * </p>
- *
- * <p>The {@link EventContext} that is attached to {@link Cause#getContext()}
- * <strong>may</strong> offer other indications as to how the command should
- * be handled, in addition to using the provided cause stack:</p>
- *
- * <ul>
- *     <li>{@link EventContextKeys#MESSAGE_TARGET}, which indicates the
- *     where messages that should be sent back to the invoker should be sent
- *     to (typically messages indicating the status of the command execution);
- *     </li>
- *     <li>{@link EventContextKeys#SUBJECT}, which indicates the subject that
- *     should be subjected to any permission checks;</li>
- *     <li>{@link EventContextKeys#LOCATION}, which indicates the location that
- *     the command should be assumed to be executed around; and,</li>
- *     <li>{@link EventContextKeys#BLOCK_TARGET}, which indicates the block that
- *     the command should take into account when executing.</li>
- * </ul>
+ * <p>Upon execution, commands are provided with a {@link CommandCause},
+ * providing the {@link Cause} and {@link EventContext} that invoked the
+ * command. See the {@link CommandCause} documentation for more information
+ * of the structure of this cause.</p>
  */
 public interface Command {
 
